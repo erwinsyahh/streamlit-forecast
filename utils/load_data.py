@@ -2,11 +2,14 @@ import pandas as pd
 import numpy as np
 from snowflake.snowpark import Session
 import streamlit as st
-import json  # Add this import if not yet present
+import json 
+from snowflake.snowpark.context import get_active_session
 
 @st.cache_data()
 def load_all_tables():
-    session = Session.builder.config("connection_name", "poc_nojo").create()
+    session = get_active_session()
+    # session = Session.builder.config("connection_name", "poc_nojo").create() # Comment unnecessary 1
+    print(session)
     train_df = session.table("POC_NOJORONO.ML_FORECAST.DAILY_PARTITIONED_SAMPLE_DATA").to_pandas()
     test_pred_df = session.table("POC_NOJORONO.NOTEBOOKS.VALIDATION_PREDS_FROM_TEST_MODEL_1").to_pandas()
     result_df = session.table("POC_NOJORONO.NOTEBOOKS.FORECAST_RESULTS").to_pandas()
